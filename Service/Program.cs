@@ -10,6 +10,8 @@ namespace Service
     {
         static void Main(string[] args)
         {
+            XmlHandler xmlHandler = new XmlHandler();
+            xmlHandler.ReadXmlFile("LOAD_DATA");
         }
     }
 }
