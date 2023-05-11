@@ -10,10 +10,13 @@ using System.Threading.Tasks;
 namespace Common
 {
     [DataContract]
+    public enum ResultMessageType { Success, Failed }
+
+    [DataContract]
     public class ReceivedFileOptions : IDisposable
     {
 
-        public ReceivedFileOptions(int numOfFiles, string resultMessage)
+        public ReceivedFileOptions(int numOfFiles, ResultMessageType resultMessage)
         {
             ReceivedFiles = new Dictionary<string, MemoryStream>(numOfFiles);
             NumOfFiles = numOfFiles;
@@ -24,8 +27,8 @@ namespace Common
         public Dictionary<string, MemoryStream> ReceivedFiles { get; set; }
         [DataMember]
         public int NumOfFiles { get; set; }
-
-        public string ResultMessage { get; set; }
+        [DataMember]
+        public ResultMessageType ResultMessage { get; set; }
 
 
         public void Dispose()
@@ -46,7 +49,7 @@ namespace Common
             }
             catch(Exception)
             {
-                Console.WriteLine("Greska prilikom disposovanja ReceivedFilesOptions!");
+                Console.WriteLine("Error while disposing ReceivedFilesOptions!");
             }
 
 

@@ -12,9 +12,8 @@ namespace Common
     public class SendFileOptions : IDisposable
     {
 
-        public SendFileOptions(MemoryStream ms, string fileName)
+        public SendFileOptions(string fileName)
         {
-            MS = ms;
             FileName = fileName;
         }
 
