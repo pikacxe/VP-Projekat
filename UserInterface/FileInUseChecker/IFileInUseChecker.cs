@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPProject
+namespace UserInterface.FileInUseChecker
 {
-    public class Class1
+    public interface IFileInUseChecker
     {
+        bool IsFileInUse(string filePath);
     }
 }

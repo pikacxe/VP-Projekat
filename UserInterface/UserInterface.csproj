@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileInUseChecker\FileInUseCommonChecker.cs" />
+    <Compile Include="FileInUseChecker\IFileInUseChecker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CSV\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LOAD_DATA.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

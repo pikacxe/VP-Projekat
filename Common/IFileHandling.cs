@@ -13,7 +13,7 @@ namespace Common
     public interface IFileHandling
     {
         [OperationContract]
-        ReceivedFileOptions SendXML(SendFileOptions file);
+        ReceivedFileOptions SendData(SendFileOptions file);
 
     }
 }
