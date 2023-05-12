@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{10F05D07-F4AE-48CF-B7CA-D28E779861AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemoryDB", "InMemoryDB\InMemoryDB.csproj", "{12FCD9B2-6BDD-409C-B282-28281E40C678}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{10F05D07-F4AE-48CF-B7CA-D28E779861AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10F05D07-F4AE-48CF-B7CA-D28E779861AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10F05D07-F4AE-48CF-B7CA-D28E779861AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12FCD9B2-6BDD-409C-B282-28281E40C678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12FCD9B2-6BDD-409C-B282-28281E40C678}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12FCD9B2-6BDD-409C-B282-28281E40C678}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12FCD9B2-6BDD-409C-B282-28281E40C678}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
