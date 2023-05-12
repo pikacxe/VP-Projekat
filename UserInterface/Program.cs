@@ -62,17 +62,27 @@ namespace UserInterface
                 // Open file for reading
                 using (FileStream fs = File.Open(filePath, FileMode.Open,FileAccess.Read))
                 {
+                    MemoryStream ms = new MemoryStream();
+                    // Copy file content to MemoryStream
+                    fs.CopyTo(ms);
+
+                    // Properly dispose of stream
+                    fs.Dispose();
+                    fs.Close();
+
                     // Prepare file content for sending
-                    using (SendFileOptions sfo = new SendFileOptions(filePath))
+                    using (SendFileOptions sfo = new SendFileOptions(ms,filePath))
                     {
-                        // Copy file content to MemoryStream
-                        fs.CopyTo(sfo.MS);
+                       
 
                         Console.WriteLine("[Info] Sending data to service for proccessing!");
 
                         // Send file content to service
                         using (ReceivedFileOptions rfo = fileHandler.SendData(sfo))
                         {
+                            // Properly dispose of stream
+                            sfo.Dispose();
+
                             Console.WriteLine("[Info] Received results!");
 
                             if (rfo.ResultMessage == ResultMessageType.Success)
@@ -112,12 +122,8 @@ namespace UserInterface
                             // Properly dispose of received files
                             rfo.Dispose();
                         }
-                        // Properly dispose of stream
-                        sfo.Dispose();
+                        
                     }
-                    // Properly dispose of stream
-                    fs.Dispose();
-                    fs.Close();
                 }
             }
 

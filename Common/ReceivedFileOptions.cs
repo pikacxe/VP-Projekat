@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Common
 {
     [DataContract]
-    public enum ResultMessageType { Success, Failed }
+    public enum ResultMessageType { Success, Failed, Default }
 
     [DataContract]
     public class ReceivedFileOptions : IDisposable
@@ -21,6 +21,10 @@ namespace Common
             ReceivedFiles = new Dictionary<string, MemoryStream>(numOfFiles);
             NumOfFiles = numOfFiles;
             ResultMessage = resultMessage;
+        }
+        public ReceivedFileOptions():this(0,ResultMessageType.Default)
+        {
+        
         }
 
         [DataMember]

@@ -33,8 +33,8 @@ namespace InMemoryDB
 
         private float MeasuredValue
         {
-            get { return MeasuredValue; }
-            set { MeasuredValue = value; }
+            get { return _MeasuredValue; }
+            set { _MeasuredValue = value; }
         }
 
         public Load(int iD, DateTime timestamp, float forecastValue, float measuredValue)
@@ -43,6 +43,15 @@ namespace InMemoryDB
             _Timestamp = timestamp;
             _ForecastValue = forecastValue;
             _MeasuredValue = measuredValue;
+        }
+
+        public static string CsvHeader()
+        {
+            return "TIME_STAMP,FORECAST_VALUE,MEASURED_VALUE\n";
+        }
+        public string ToCsv()
+        {
+            return $"{_Timestamp.ToShortDateString()},{_Timestamp.ToShortTimeString()},{_ForecastValue},{_MeasuredValue}\n";
         }
     }
 }

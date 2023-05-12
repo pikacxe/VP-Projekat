@@ -11,11 +11,11 @@ namespace Common
     [DataContract]
     public class SendFileOptions : IDisposable
     {
-
-        public SendFileOptions(string fileName)
+        
+        public SendFileOptions(MemoryStream ms,string fileName)
         {
+            MS=ms;
             FileName = fileName;
-            MS=new MemoryStream();
         }
 
         [DataMember]

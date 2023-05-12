@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileHandlingService.cs" />
+    <Compile Include="ParseData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlHandler.cs" />
@@ -59,6 +61,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{b0b6abad-d8c0-407d-a96c-e0485b21b862}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InMemoryDB\InMemoryDB.csproj">
+      <Project>{12fcd9b2-6bdd-409c-b282-28281e40c678}</Project>
+      <Name>InMemoryDB</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

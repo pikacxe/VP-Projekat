@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InMemoryDB;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Service
     public class XmlHandler
     {
 
-        public void ReadXmlFile(MemoryStream memoryStream,string filename)
+        public List<Load> ReadXmlFile(MemoryStream memoryStream,string filename)
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(memoryStream);
@@ -26,13 +27,14 @@ namespace Service
             }
 
             WriteImportedFile(filename);
-
-           
-
-
+            return new List<Load>();
 
         }
 
+        public List<ParseData> ReadXmlFileMultipleCsv(MemoryStream memoryStream, string filename)
+        {
+            throw new NotImplementedException();
+        }
         private void WriteImportedFile(string filename)
         {
             throw new NotImplementedException();
