@@ -15,6 +15,7 @@ namespace Common
         public SendFileOptions(string fileName)
         {
             FileName = fileName;
+            MS=new MemoryStream();
         }
 
         [DataMember]
