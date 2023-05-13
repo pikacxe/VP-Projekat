@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileHandlingException.cs" />
     <Compile Include="IFileHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceivedFileOptions.cs" />

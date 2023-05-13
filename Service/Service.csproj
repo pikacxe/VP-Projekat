@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileHandlingService.cs" />
-    <Compile Include="ParseData.cs" />
+    <Compile Include="GroupedLoads.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlHandler.cs" />

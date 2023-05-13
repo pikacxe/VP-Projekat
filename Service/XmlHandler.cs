@@ -1,10 +1,6 @@
-﻿using InMemoryDB;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Service
@@ -12,26 +8,32 @@ namespace Service
     public class XmlHandler
     {
 
-        public List<Load> ReadXmlFile(MemoryStream memoryStream,string filename)
+        public GroupedLoads ReadXmlFile(MemoryStream memoryStream, string filename)
         {
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(memoryStream);
-            XmlNode root = xmlDocument.DocumentElement;
-
-            XmlNodeList xmlNodeList = root.SelectNodes("row");
-
-
-            foreach(XmlNode x in xmlNodeList)
+            using (MemoryStream ms = new MemoryStream(memoryStream.ToArray()))
             {
-                ParseXmlNode(x);
+
+                xmlDocument.Load(ms);
+                XmlNode root = xmlDocument.DocumentElement;
+
+                XmlNodeList xmlNodeList = root.SelectNodes("row");
+
+
+                foreach (XmlNode x in xmlNodeList)
+                {
+                    Console.WriteLine(x.SelectSingleNode("TIME_STAMP").InnerText);
+                    // ParseXmlNode(x);
+                }
+
+                // WriteImportedFile(filename);
+                ms.Dispose();
+                ms.Close();
+                return new GroupedLoads(DateTime.Now);
+
             }
-
-            WriteImportedFile(filename);
-            return new List<Load>();
-
         }
-
-        public List<ParseData> ReadXmlFileMultipleCsv(MemoryStream memoryStream, string filename)
+        public List<GroupedLoads> ReadXmlFileGrouped(MemoryStream memoryStream, string filename)
         {
             throw new NotImplementedException();
         }

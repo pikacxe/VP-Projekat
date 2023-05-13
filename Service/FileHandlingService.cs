@@ -1,14 +1,10 @@
 ﻿using Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
 using InMemoryDB;
 using System.IO;
-using System.IO.Pipes;
 
 namespace Service
 {
@@ -24,14 +20,14 @@ namespace Service
             if (multipleCsv == "false")
             {
                 fileOptions.NumOfFiles = 1;
-                List<Load> loads=xmlHandler.ReadXmlFile(file.MS,file.FileName);
+                GroupedLoads gl = xmlHandler.ReadXmlFile(file.MS,file.FileName);
                 fileOptions.ReceivedFiles.Add("result_data.csv", new MemoryStream());
-                WriteToStream(fileOptions.ReceivedFiles["result_data.csv"], loads);
+                WriteToStream(fileOptions.ReceivedFiles["result_data.csv"], gl.loads);
             }
             else
             {
                 //reuturns list of ParseData
-                List<ParseData> parseData=xmlHandler.ReadXmlFileMultipleCsv(file.MS, file.FileName);
+                List<GroupedLoads> parseData=xmlHandler.ReadXmlFileGrouped(file.MS, file.FileName);
                 fileOptions.NumOfFiles = parseData.Count();
                 foreach (var p in parseData)
                 {

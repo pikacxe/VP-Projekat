@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InMemoryDB
 {
@@ -51,7 +47,7 @@ namespace InMemoryDB
         }
         public string ToCsv()
         {
-            return $"{_Timestamp.ToShortDateString()},{_Timestamp.ToShortTimeString()},{_ForecastValue},{_MeasuredValue}\n";
+            return $"{_Timestamp.ToString("yyyy-MM-dd")},{_Timestamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
         }
     }
 }
