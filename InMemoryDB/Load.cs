@@ -47,7 +47,7 @@ namespace InMemoryDB
         }
         public string ToCsv()
         {
-            return $"{_Timestamp.ToString("yyyy-MM-dd")},{_Timestamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
+            return $"{_Timestamp.Date.ToString("yyyy-MM-dd")},{_Timestamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
         }
     }
 }

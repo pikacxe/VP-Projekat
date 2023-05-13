@@ -2,13 +2,13 @@
 
 namespace InMemoryDB
 {
-    public enum Message_type{Info, Warning, Error}
+    public enum MessageType{Info, Warning, Error}
 
     public class Audit
     {
         private int _ID;
         private DateTime _Timestap;
-        private Message_type _MessageType;
+        private MessageType _MessageType;
         private string Message;
 
         public int ID
@@ -21,7 +21,7 @@ namespace InMemoryDB
             get { return _Timestap; }
             set { _Timestap = value; }
         }
-        private Message_type MessageType
+        private MessageType MessageType
         {
             get { return _MessageType; }
             set { _MessageType = value; }
@@ -33,7 +33,7 @@ namespace InMemoryDB
             set { _Message = value; }
         }
 
-        public Audit(int iD, DateTime timestap, Message_type messageType, string message)
+        public Audit(int iD, DateTime timestap, MessageType messageType, string message)
         {
             _ID = iD;
             _Timestap = timestap;
