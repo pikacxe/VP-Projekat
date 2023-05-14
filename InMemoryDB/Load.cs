@@ -5,7 +5,7 @@ namespace InMemoryDB
     public class Load
     {
         private int _ID;
-        private DateTime _Timestamp;
+        private DateTime _TimeStamp;
         private float _ForecastValue;
         private float _MeasuredValue;
 
@@ -15,10 +15,10 @@ namespace InMemoryDB
             set { _ID = value; }
         }
 
-        public DateTime Timestamp
+        public DateTime TimeStamp
         {
-            get { return _Timestamp; }
-            set { _Timestamp = value; }
+            get { return _TimeStamp; }
+            set { _TimeStamp = value; }
         }
 
         private float ForecastValue
@@ -33,10 +33,9 @@ namespace InMemoryDB
             set { _MeasuredValue = value; }
         }
 
-        public Load(int iD, DateTime timestamp, float forecastValue, float measuredValue)
+        public Load( DateTime timestamp, float forecastValue, float measuredValue)
         {
-            _ID = iD;
-            _Timestamp = timestamp;
+            _TimeStamp = timestamp;
             _ForecastValue = forecastValue;
             _MeasuredValue = measuredValue;
         }
@@ -47,7 +46,7 @@ namespace InMemoryDB
         }
         public string ToCsv()
         {
-            return $"{_Timestamp.Date.ToString("yyyy-MM-dd")},{_Timestamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
+            return $"{_TimeStamp.Date.ToString("yyyy-MM-dd")},{_TimeStamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
         }
     }
 }

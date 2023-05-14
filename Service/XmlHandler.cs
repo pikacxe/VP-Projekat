@@ -54,7 +54,7 @@ namespace Service
                     string datum = x.SelectSingleNode("TIME_STAMP").InnerText;
 
                     DateTime currentdate = DateTime.ParseExact(datum, "yyyy-MM-dd HH:mm", null);
-                    if (date.Date!=currentdate)
+                    if (date.Date!=currentdate.Date)
                     {
                         groupedLoadsList.Add(new GroupedLoads(currentdate));
                         listindex++;

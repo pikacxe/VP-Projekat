@@ -7,9 +7,9 @@ namespace InMemoryDB
     public class Audit
     {
         private int _ID;
-        private DateTime _Timestap;
+        private DateTime _TimeStamp;
         private MessageType _MessageType;
-        private string Message;
+        private string _Message;
 
         public int ID
         {
@@ -18,27 +18,26 @@ namespace InMemoryDB
         }
         public DateTime Timestap
         {
-            get { return _Timestap; }
-            set { _Timestap = value; }
+            get { return _TimeStamp; }
+            set { _TimeStamp = value; }
         }
-        private MessageType MessageType
+        public MessageType MessageType
         {
             get { return _MessageType; }
             set { _MessageType = value; }
         } 
 
-        private string _Message
+        public string Message
         {
             get { return _Message; }
             set { _Message = value; }
         }
 
-        public Audit(int iD, DateTime timestap, MessageType messageType, string message)
+        public Audit(DateTime timeStamp, MessageType messageType, string message)
         {
-            _ID = iD;
-            _Timestap = timestap;
+            _TimeStamp = timeStamp;
             _MessageType = messageType;
-            Message = message;
+            _Message = message;
         }
     }
 }

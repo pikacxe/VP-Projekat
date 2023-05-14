@@ -17,9 +17,8 @@
             set { _FileName = value; }
         }
 
-        public ImportedFile(int iD, string fileName)
+        public ImportedFile(string fileName)
         {
-            _ID = iD;
             _FileName = fileName;
         }
     }

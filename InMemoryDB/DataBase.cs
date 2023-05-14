@@ -5,23 +5,26 @@ namespace InMemoryDB
 {
     public class DataBase
     {
-        ConcurrentDictionary<int, Load> loads = new ConcurrentDictionary<int, Load>();
-        ConcurrentDictionary<int, ImportedFile> importedfiles= new ConcurrentDictionary<int, ImportedFile>();
-        ConcurrentDictionary<int, Audit> audits=new ConcurrentDictionary<int, Audit>();
+        static ConcurrentDictionary<int, Load> loads = new ConcurrentDictionary<int, Load>();
+        static ConcurrentDictionary<int, ImportedFile> importedfiles= new ConcurrentDictionary<int, ImportedFile>();
+        static ConcurrentDictionary<int, Audit> audits=new ConcurrentDictionary<int, Audit>();
 
         public void AddLoad(Load load)
         {
-            loads.TryAdd(loads.Count, load);
+            load.ID = loads.Count;
+            loads.TryAdd(load.ID, load);
         }
 
         public void AddImportedFile(ImportedFile importedFile)
         {
-            importedfiles.TryAdd(importedfiles.Count, importedFile);
+            importedFile.ID = importedfiles.Count;
+            importedfiles.TryAdd(importedFile.ID, importedFile);
         }
 
         public void AddAudit(Audit audit)
         {
-            audits.TryAdd(audits.Count, audit);
+            audit.ID = audits.Count;
+            audits.TryAdd(audit.ID, audit);
         }
 
         private DataBase() { }
@@ -39,6 +42,17 @@ namespace InMemoryDB
             }
         }
 
+        public static bool Contains(DateTime timeStamp)
+        {
+            foreach (var x in loads.Values)
+            {
+                if (timeStamp == x.TimeStamp)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
     }
 }
