@@ -6,7 +6,7 @@ namespace Common
     public interface IFileHandling
     {
         [OperationContract]
+        [FaultContract(typeof(FileHandlingException))]
         ReceivedFileOptions SendData(SendFileOptions file);
-
     }
 }

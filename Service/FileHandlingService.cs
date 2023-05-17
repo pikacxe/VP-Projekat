@@ -5,42 +5,91 @@ using System.ServiceModel;
 using System.Configuration;
 using InMemoryDB;
 using System.IO;
+using System.IO.Pipes;
+using System;
 
 namespace Service
 {
     public class FileHandlingService : IFileHandling
     {
-        [OperationBehavior(AutoDisposeParameters = true)]
-        public ReceivedFileOptions SendData(SendFileOptions file)
+        ReceivedFileOptions fileOptions = new ReceivedFileOptions();
+        XmlHandler xmlHandler = new XmlHandler();
+        public FileHandlingService()
         {
-            
-            XmlHandler xmlHandler=new XmlHandler();
             var multipleCsv = ConfigurationManager.AppSettings.Get("multipleCSV");
-            ReceivedFileOptions fileOptions = new ReceivedFileOptions();
             if (multipleCsv == "false")
             {
-                fileOptions.NumOfFiles = 1;
-                GroupedLoads gl = xmlHandler.ReadXmlFile(file.MS,file.FileName);
-                fileOptions.ReceivedFiles.Add("result_data.csv", new MemoryStream());
-                WriteToStream(fileOptions.ReceivedFiles["result_data.csv"], gl.loads);
+                xmlHandler.CustomEvent += GenerateSingleCsv;
             }
             else
             {
-                //reuturns list of ParseData
-                List<GroupedLoads> parseData=xmlHandler.ReadXmlFileGrouped(file.MS, file.FileName);
-                fileOptions.NumOfFiles = parseData.Count();
-                foreach (var p in parseData)
+                xmlHandler.CustomEvent += GenerateMultipleCsv;
+            }
+        }
+
+        [OperationBehavior(AutoDisposeParameters = true)]
+
+        public ReceivedFileOptions SendData(SendFileOptions file)
+        {
+
+            if (file == null || file.MS == null)
+            {
+                throw new FaultException<FileHandlingException>(new FileHandlingException("[ERROR] Sent invalid file"));
+            }
+            try
+            {
+                xmlHandler.ReadXmlFile(file.MS, file.FileName);
+                fileOptions.ResultMessage = ResultMessageType.Success;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                fileOptions.ResultMessage = ResultMessageType.Failed;
+            }
+
+            return fileOptions;
+        }
+
+        public void GenerateSingleCsv(object sender, CustomEventArgs<GroupedLoads> args)
+        {
+            try
+            {
+                fileOptions.NumOfFiles = 1;
+                List<Load> loads = new List<Load>();
+                foreach (var x in args.Items)
+                {
+                    loads.AddRange(x.loads);
+                }
+                fileOptions.ReceivedFiles.Add("result_data.csv", new MemoryStream());
+
+                WriteToStream(fileOptions.ReceivedFiles["result_data.csv"], loads);
+            }
+            catch (Exception e)
+            {
+                fileOptions.ResultMessage = ResultMessageType.Failed;
+                Console.WriteLine(e.Message);
+            }
+        }
+        public void GenerateMultipleCsv(object sender, CustomEventArgs<GroupedLoads> args)
+        {
+            try
+            {
+                fileOptions.NumOfFiles = args.Items.Count();
+                foreach (var p in args.Items)
                 {
                     string fileName = $"result_data_{p.Date.Year}_{p.Date.Month}_{p.Date.Day}.csv";
                     fileOptions.ReceivedFiles.Add(fileName, new MemoryStream());
                     WriteToStream(fileOptions.ReceivedFiles[fileName], p.loads);
                 }
-
             }
-            fileOptions.ResultMessage = ResultMessageType.Success;
-            return fileOptions;
+            catch (Exception e)
+            {
+                fileOptions.ResultMessage = ResultMessageType.Failed;
+                Console.WriteLine(e.Message);
+            }
         }
-        private void WriteToStream(MemoryStream memoryStream,List<Load> loads)
+        private void WriteToStream(MemoryStream memoryStream, List<Load> loads)
         {
             using (StreamWriter streamWriter = new StreamWriter(memoryStream))
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace InMemoryDB
 {
@@ -46,7 +47,7 @@ namespace InMemoryDB
         }
         public string ToCsv()
         {
-            return $"{_TimeStamp.Date.ToString("yyyy-MM-dd")},{_TimeStamp.ToString("HH:mm")},{_ForecastValue},{_MeasuredValue}\n";
+            return $"{_TimeStamp.Date.ToString("yyyy-MM-dd")},{_TimeStamp.ToString("HH:mm")},{_ForecastValue.ToString("0.00",CultureInfo.InvariantCulture)},{_MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture)}\n";
         }
     }
 }

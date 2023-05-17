@@ -1,42 +1,16 @@
-﻿using InMemoryDB;
+﻿using Common;
+using InMemoryDB;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 
 namespace Service
 {
-    public class XmlHandler
+    public class XmlHandler:CustomEventSource<GroupedLoads>
     {
-
-        public GroupedLoads ReadXmlFile(MemoryStream memoryStream, string filename)
-        {
-            XmlDocument xmlDocument = new XmlDocument();
-            using (MemoryStream ms = new MemoryStream(memoryStream.ToArray()))
-            {
-
-                xmlDocument.Load(ms);
-                XmlNode root = xmlDocument.DocumentElement;
-
-                GroupedLoads groupedLoads = new GroupedLoads(DateTime.Now);
-                XmlNodeList xmlNodeList = root.SelectNodes("row");
-                int index = 0;
-
-                foreach (XmlNode x in xmlNodeList)
-                {
-                    groupedLoads.loads.Add(ParseXmlNode(x,index));
-                    index++;
-                    // ParseXmlNode(x);
-                }
-
-                // WriteImportedFile(filename);
-                ms.Dispose();
-                ms.Close();
-                return groupedLoads;
-
-            }
-        }
-        public List<GroupedLoads> ReadXmlFileGrouped(MemoryStream memoryStream, string filename)
+        public void ReadXmlFile(MemoryStream memoryStream, string filename)
         {
             XmlDocument xmlDocument = new XmlDocument();
             using(MemoryStream ms=new MemoryStream(memoryStream.ToArray()))
@@ -45,7 +19,6 @@ namespace Service
                 XmlNode root = xmlDocument.DocumentElement;
                 XmlNodeList xmlNodeList = root.SelectNodes("row");
                 List<GroupedLoads> groupedLoadsList = new List<GroupedLoads>();
-                int index = 0;
                 DateTime date=new DateTime();
                 int listindex = -1;
 
@@ -56,20 +29,19 @@ namespace Service
                     DateTime currentdate = DateTime.ParseExact(datum, "yyyy-MM-dd HH:mm", null);
                     if (date.Date!=currentdate.Date)
                     {
+
                         groupedLoadsList.Add(new GroupedLoads(currentdate));
                         listindex++;
-                      
+                     
+                        date=currentdate;
                     }
-                    groupedLoadsList[listindex].loads.Add(ParseXmlNode(x, index));
-                    index++;
+                    groupedLoadsList[listindex].loads.Add(ParseXmlNode(x));
                 }
 
                 // WriteImportedFile(filename);
                 ms.Dispose();
                 ms.Close();
-                return groupedLoadsList;
-
-
+                RaiseCustomEvent(groupedLoadsList);
             }
         }
         private void WriteImportedFile(string filename)
@@ -77,25 +49,24 @@ namespace Service
             throw new NotImplementedException();
         }
 
-        private Load ParseXmlNode(XmlNode x,int index)
+        private Load ParseXmlNode(XmlNode x)
         {
            string datum= x.SelectSingleNode("TIME_STAMP").InnerText;
-           
+           //Check date if valid
             DateTime date = DateTime.ParseExact(datum,"yyyy-MM-dd HH:mm",null);
             float ForecastValue;
-
-            if(float.TryParse(x.SelectSingleNode("FORECAST_VALUE").InnerText,out ForecastValue)==false)
+            if (float.TryParse(x.SelectSingleNode("FORECAST_VALUE").InnerText, NumberStyles.Float, CultureInfo.InvariantCulture, out ForecastValue)==false)
             {
-                Audit audit = new Audit(index, date, MessageType.Error, "Invalid Forecast Value");
+                Audit audit = new Audit( date, MessageType.Error, "Invalid Forecast Value");
 
             }
             float MeasuredValue;
-            if( float.TryParse(x.SelectSingleNode("MEASURED_VALUE").InnerText,out MeasuredValue)==false)
+            if( float.TryParse(x.SelectSingleNode("MEASURED_VALUE").InnerText,NumberStyles.Float, CultureInfo.InvariantCulture, out MeasuredValue)==false)
             {
-                Audit audit = new Audit(index, date, MessageType.Error, "Invalid Measured Value");
+                Audit audit = new Audit(date, MessageType.Error, "Invalid Measured Value");
             }
 
-            return new Load(index, date, ForecastValue, MeasuredValue);
+            return new Load(date, ForecastValue, MeasuredValue);
             
         }
 

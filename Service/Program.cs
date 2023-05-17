@@ -7,8 +7,6 @@ namespace Service
     {
         static void Main(string[] args)
         {
-            //XmlHandler xmlHandler = new XmlHandler();
-            //xmlHandler.ReadXmlFile("LOAD_DATA");
             using (ServiceHost host = new ServiceHost(typeof(FileHandlingService)))
             {
                 host.Open();

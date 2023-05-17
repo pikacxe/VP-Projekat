@@ -11,6 +11,10 @@ namespace InMemoryDB
 
         public void AddLoad(Load load)
         {
+            if (Contains(load.TimeStamp))
+            {
+                return;
+            }
             load.ID = loads.Count;
             loads.TryAdd(load.ID, load);
         }
