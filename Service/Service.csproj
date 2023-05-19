@@ -55,9 +55,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LOAD_DATA.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{b0b6abad-d8c0-407d-a96c-e0485b21b862}</Project>
       <Name>Common</Name>

@@ -22,13 +22,13 @@ namespace InMemoryDB
             set { _TimeStamp = value; }
         }
 
-        private float ForecastValue
+        public float ForecastValue
         {
             get { return _ForecastValue; }
             set { _ForecastValue = value; }
         }
 
-        private float MeasuredValue
+        public float MeasuredValue
         {
             get { return _MeasuredValue; }
             set { _MeasuredValue = value; }
@@ -39,6 +39,11 @@ namespace InMemoryDB
             _TimeStamp = timestamp;
             _ForecastValue = forecastValue;
             _MeasuredValue = measuredValue;
+        }
+
+        public Load() : this(new DateTime(), -1,-1)
+        {
+
         }
 
         public static string CsvHeader()
