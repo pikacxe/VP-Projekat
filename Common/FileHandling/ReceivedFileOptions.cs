@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace Common
+namespace Common.FileHandling
 {
     public enum ResultMessageType { Success, Failed, Default }
 

@@ -2,8 +2,9 @@
 using System.IO;
 using System.Configuration;
 using System.ServiceModel;
-using Common;
+using Common.FileHandling;
 using UserInterface.FileInUseChecker;
+using System.Threading;
 
 namespace UserInterface
 {
@@ -13,17 +14,19 @@ namespace UserInterface
         static void Main(string[] args)
         {
             // Load config options
-            var filePath = ConfigurationManager.AppSettings.Get("xmlPath");
-            var receivePath = ConfigurationManager.AppSettings.Get("savePath");
+            string filePath = ConfigurationManager.AppSettings.Get("xmlPath");
+            string receivePath = ConfigurationManager.AppSettings.Get("savePath");
+            string fileName = Path.GetFileName(filePath);
 
             // Create a new FileSystemWatcher object and set its properties
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = Path.GetDirectoryName(filePath);
-            watcher.Filter = Path.GetFileName(filePath);
+            watcher.Filter = fileName;
             watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
 
             // Add an event handler for the Changed event
             watcher.Changed += OnFileChanged;
+            watcher.Created += OnFileChanged;
 
             // Start watching for changes
             watcher.EnableRaisingEvents = true;
@@ -39,12 +42,13 @@ namespace UserInterface
             // Main loop 
             while (true)
             {
+                // Check for exit key
                 if (Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.Escape)
                 {
                     break;
                 }
 
-                // Wait for file changes
+                // Check if change has occured
                 if (!changed)
                 {
                     continue;
@@ -54,14 +58,12 @@ namespace UserInterface
                 if (fileInUseCheck.IsFileInUse(filePath))
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("[WARN] File is currently in ise by another proccess!");
+                    Console.WriteLine($"[WARN] File '{fileName}' is currently in use by another proccess!");
                     Console.ResetColor();
-                    continue;
                 }
 
-                // Changes have been completed
+                // Finished changing the file
                 changed = false;
-
 
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -69,7 +71,7 @@ namespace UserInterface
                     GetMemoryStream(ms, filePath);
 
                     // Prepare file content for sending
-                    using (SendFileOptions sfo = new SendFileOptions(ms, filePath))
+                    using (SendFileOptions sfo = new SendFileOptions(ms, fileName))
                     {
                         Console.WriteLine("[Info] Sending data to service for proccessing!");
 
@@ -95,7 +97,7 @@ namespace UserInterface
                                     {
                                         // Write data from received MemoryStream to local file
                                         using (MemoryStream receivedStream = new MemoryStream(file.Value.ToArray()))
-                                        { 
+                                        {
                                             receivedStream.CopyTo(fileStream);
                                             Console.WriteLine($"\t[SAVED] '{fullPath}'");
                                         }
@@ -117,22 +119,23 @@ namespace UserInterface
                             // Properly dispose of received files
                             rfo.Dispose();
                         }
-
                     }
                 }
+                Thread.Sleep(1000);
                 Console.WriteLine("Waiting for changes. Press Esc to exit...");
             }
 
             // Properly dispose of event listener
             watcher.Changed -= OnFileChanged;
+            watcher.Created -= OnFileChanged;
             watcher.Dispose();
-
         }
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("Detected file change, proccessing...");
             changed = true;
+            Console.WriteLine($"Detected file '{e.Name}' change, proccessing...");
+
         }
 
         private static void GetMemoryStream(MemoryStream ms, string filePath)

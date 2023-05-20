@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.IO;
 
-namespace Common
+namespace Common.FileHandling
 {
     [DataContract]
     public class SendFileOptions : IDisposable

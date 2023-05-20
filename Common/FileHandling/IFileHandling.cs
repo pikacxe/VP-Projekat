@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace Common
+namespace Common.FileHandling
 {
     [ServiceContract]
     public interface IFileHandling

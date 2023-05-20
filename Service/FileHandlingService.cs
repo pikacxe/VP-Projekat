@@ -1,11 +1,11 @@
-﻿using Common;
+﻿using Common.CustomEvents;
+using Common.FileHandling;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Configuration;
 using InMemoryDB;
 using System.IO;
-using System.IO.Pipes;
 using System;
 
 namespace Service
@@ -41,23 +41,21 @@ namespace Service
                 xmlHandler.ReadXmlFile(file.MS, file.FileName);
                 fileOptions.ResultMessage = ResultMessageType.Success;
             }
-            catch (Exception ex)
+            catch(Exception e)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                fileOptions.ResultMessage = ResultMessageType.Failed;
+                Console.WriteLine($"[ERROR] {e.Message}");
             }
 
             return fileOptions;
         }
 
-        public void GenerateSingleCsv(object sender, CustomEventArgs<GroupedLoads> args)
+        public void GenerateSingleCsv(object sender, CustomEventArgs<List<GroupedLoads>> args)
         {
             try
             {
                 fileOptions.NumOfFiles = 1;
                 List<Load> loads = new List<Load>();
-                foreach (var x in args.Items)
+                foreach (var x in args.Item)
                 {
                     loads.AddRange(x.loads);
                 }
@@ -71,12 +69,12 @@ namespace Service
                 Console.WriteLine(e.Message);
             }
         }
-        public void GenerateMultipleCsv(object sender, CustomEventArgs<GroupedLoads> args)
+        public void GenerateMultipleCsv(object sender, CustomEventArgs<List<GroupedLoads>> args)
         {
             try
             {
-                fileOptions.NumOfFiles = args.Items.Count();
-                foreach (var p in args.Items)
+                fileOptions.NumOfFiles = args.Item.Count();
+                foreach (var p in args.Item)
                 {
                     string fileName = $"result_data_{p.Date.Year}_{p.Date.Month}_{p.Date.Day}.csv";
                     fileOptions.ReceivedFiles.Add(fileName, new MemoryStream());

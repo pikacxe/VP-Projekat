@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Common.CustomEvents
 {
     public class CustomEventArgs<T>:EventArgs
     {
-        public List<T> Items { get; set; }
+        public T Item { get; set; }
 
-        public CustomEventArgs(List<T> test)
+        public CustomEventArgs(T item)
         {
-            Items=test;
+            Item=item;
         }
     }
 }

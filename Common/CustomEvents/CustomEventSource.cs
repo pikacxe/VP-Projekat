@@ -5,14 +5,14 @@ using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Common.CustomEvents
 {
     public class CustomEventSource<T>
     {
         public event CustomEventHandler CustomEvent;
         public delegate void CustomEventHandler(object sender, CustomEventArgs<T> args);
 
-        public void RaiseCustomEvent(List<T> test)
+        public void RaiseCustomEvent(T test)
         {
             
             // Create a new instance of the custom event arguments class

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Common
+namespace Common.FileHandling
 {
     [DataContract]
     public class FileHandlingException : System.Exception

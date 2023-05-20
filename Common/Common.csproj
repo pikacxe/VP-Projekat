@@ -43,13 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomEventArgs.cs" />
-    <Compile Include="CustomEventSource.cs" />
-    <Compile Include="FileHandlingException.cs" />
-    <Compile Include="IFileHandling.cs" />
+    <Compile Include="CustomEvents\CustomEventArgs.cs" />
+    <Compile Include="CustomEvents\CustomEventSource.cs" />
+    <Compile Include="FileHandling\FileHandlingException.cs" />
+    <Compile Include="FileHandling\IFileHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReceivedFileOptions.cs" />
-    <Compile Include="SendFileOptions.cs" />
+    <Compile Include="FileHandling\ReceivedFileOptions.cs" />
+    <Compile Include="FileHandling\SendFileOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

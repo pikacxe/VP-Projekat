@@ -10,8 +10,8 @@ namespace Service
             using (ServiceHost host = new ServiceHost(typeof(FileHandlingService)))
             {
                 host.Open();
-                Console.WriteLine("Service started");
-                Console.ReadKey();
+                Console.WriteLine("Service started. Press Esc twice to exit...");
+                while (Console.ReadKey().Key != ConsoleKey.Escape);
                 host.Close();
             }
 
