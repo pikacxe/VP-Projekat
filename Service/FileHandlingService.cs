@@ -14,6 +14,7 @@ namespace Service
     {
         ReceivedFileOptions fileOptions = new ReceivedFileOptions();
         XmlHandler xmlHandler = new XmlHandler();
+       
         public FileHandlingService()
         {
             var multipleCsv = ConfigurationManager.AppSettings.Get("multipleCSV");
@@ -31,7 +32,6 @@ namespace Service
 
         public ReceivedFileOptions SendData(SendFileOptions file)
         {
-
             if (file == null || file.MS == null)
             {
                 throw new FaultException<FileHandlingException>(new FileHandlingException("[ERROR] Sent invalid file"));
@@ -100,5 +100,8 @@ namespace Service
                 streamWriter.Close();
             }
         }
+
+       
+
     }
 }

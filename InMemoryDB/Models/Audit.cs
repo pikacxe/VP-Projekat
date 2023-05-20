@@ -16,7 +16,7 @@ namespace InMemoryDB
             get { return _ID; }
             set { _ID = value; }
         }
-        public DateTime Timestap
+        public DateTime Timestamp
         {
             get { return _TimeStamp; }
             set { _TimeStamp = value; }
@@ -39,5 +39,18 @@ namespace InMemoryDB
             _MessageType = messageType;
             _Message = message;
         }
+
+        public override string ToString()
+        {
+            return $"{ID}\t{Timestamp}\t\t{nameof(MessageType)}\t{Message}";
+        }
+
+        public static string FormatHeader()
+        {
+            return "\n==========AUDITS==========\nID\tTIMESTAMP\t\tTYPE\tMESSAGE";
+        }
+
+        
+
     }
 }

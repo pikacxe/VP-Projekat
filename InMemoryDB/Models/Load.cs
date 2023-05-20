@@ -54,5 +54,16 @@ namespace InMemoryDB
         {
             return $"{_TimeStamp.Date.ToString("yyyy-MM-dd")},{_TimeStamp.ToString("HH:mm")},{_ForecastValue.ToString("0.00",CultureInfo.InvariantCulture)},{_MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture)}\n";
         }
+
+        public override string ToString()
+        {
+            return $"{ID}\t{TimeStamp}\t\t{ForecastValue.ToString("0.00", CultureInfo.InvariantCulture)}\t{MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture)}";
+        }
+
+        public static string FormatHeader()
+        {
+            return "\n==========LOADS==========\nID\tTIMESTAMP\t\tFORECASTVALUE\tMEASUREDVALUE";
+        }
+
     }
 }

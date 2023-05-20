@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBPrinter.cs" />
     <Compile Include="FileHandlingService.cs" />
     <Compile Include="GroupedLoads.cs" />
     <Compile Include="Program.cs" />

@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Common.CustomEvents;
+using System;
 using System.Collections.Concurrent;
-
+using System.Collections.Generic;
 
 namespace InMemoryDB
 {
     public class DataBase
     {
         static ConcurrentDictionary<int, Load> loads = new ConcurrentDictionary<int, Load>();
-        static ConcurrentDictionary<int, ImportedFile> importedfiles= new ConcurrentDictionary<int, ImportedFile>();
-        static ConcurrentDictionary<int, Audit> audits=new ConcurrentDictionary<int, Audit>();
+        static ConcurrentDictionary<int, ImportedFile> importedfiles = new ConcurrentDictionary<int, ImportedFile>();
+        static ConcurrentDictionary<int, Audit> audits = new ConcurrentDictionary<int, Audit>();
 
+        public IEnumerable<Load> Loads { get { return loads.Values; } }
+        public IEnumerable<Audit> Audits { get { return audits.Values; } }
+        public IEnumerable<ImportedFile> ImportedFiles { get { return importedfiles.Values; } }
         public void AddLoad(Load load)
         {
             if (Contains(load.TimeStamp))
@@ -53,11 +57,10 @@ namespace InMemoryDB
             {
                 if (timeStamp == x.TimeStamp)
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
-
     }
 }

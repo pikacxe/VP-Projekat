@@ -21,5 +21,15 @@
         {
             _FileName = fileName;
         }
+
+        public override string ToString()
+        {
+            return $"{ID}\t{FileName}";
+        }
+
+        public static string FormatHeader()
+        {
+            return "\n==========IMPORTED FILES==========\nID\tFILENAME";
+        }
     }
 }
