@@ -90,7 +90,7 @@ namespace UserInterface
                     sfo.Dispose();
                 }
             }
-            Thread.Sleep(1000);
+            cf.Close();
             Console.WriteLine("Waiting for changes. Press Esc to exit...");
         }
 
