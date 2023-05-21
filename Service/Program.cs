@@ -10,14 +10,19 @@ namespace Service
     {
         static void Main(string[] args)
         {
+
             DBPrinter dBPrinter = new DBPrinter();
+            // Event for printing tables 
             dBPrinter.CustomEvent += PrintTable;
+            // Detecting from keybord key which table to write
             dBPrinter.DetectKey();
+
+            
             using (ServiceHost host = new ServiceHost(typeof(FileHandlingService)))
             {
                 host.Open();
                 Console.WriteLine("Service started. Press Esc twice to exit...");
-                while (Console.ReadKey().Key != ConsoleKey.Escape);
+                while (Console.ReadKey(intercept:true).Key != ConsoleKey.Escape);
                 host.Close();
             }
 
@@ -29,24 +34,24 @@ namespace Service
             {
                 case "loads":
                     Console.WriteLine(Load.FormatHeader());
-                    PrintDictionary(DataBase.Instance.Loads);
+                    PrintList(DataBase.Instance.Loads);
                     break;
                 case "audits":
                     Console.WriteLine(Audit.FormatHeader());
-                    PrintDictionary(DataBase.Instance.Audits);
+                    PrintList(DataBase.Instance.Audits);
                     break;
                 case "ifiles":
                     Console.WriteLine(ImportedFile.FormatHeader());
-                    PrintDictionary(DataBase.Instance.ImportedFiles);
+                    PrintList(DataBase.Instance.ImportedFiles);
                     break;
             }
         }
 
-        private static void PrintDictionary<T>(IEnumerable<T> list)
+        private static void PrintList<T>(IEnumerable<T> list)
         {
-            foreach (var kvp in list)
+            foreach (var x in list)
             {
-                Console.WriteLine(kvp);
+                Console.WriteLine(x);
             }
         }
 
