@@ -45,11 +45,12 @@ namespace InMemoryDB
         {
 
         }
-
+        // Returns string representation for csv header
         public static string CsvHeader()
         {
             return "TIME_STAMP,FORECAST_VALUE,MEASURED_VALUE\n";
         }
+        // Returns csv formated string data
         public string ToCsv()
         {
             return $"{_TimeStamp.Date.ToString("yyyy-MM-dd")},{_TimeStamp.ToString("HH:mm")},{_ForecastValue.ToString("0.00",CultureInfo.InvariantCulture)},{_MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture)}\n";
