@@ -48,10 +48,10 @@ namespace UserInterface
             Console.WriteLine($"Detected file '{e.Name}' change, proccessing...");
 
             // Check if file is still in use
-            if (!FileInUse(e.Name))
+            while (FileInUse(e.FullPath))
             {
-                return;
-            }
+                Thread.Sleep(1000);
+            };
 
             // Create new ChannelFactory and load a preset configuration
             ChannelFactory<IFileHandling> cf = new ChannelFactory<IFileHandling>("FileHandlingService");
@@ -84,6 +84,10 @@ namespace UserInterface
                 catch (Exception ex)
                 {
                     WriteErrorMessageToConsole(ex.Message);
+                }
+                finally
+                {
+                    sfo.Dispose();
                 }
             }
             Thread.Sleep(1000);
