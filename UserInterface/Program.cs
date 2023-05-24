@@ -167,7 +167,7 @@ namespace UserInterface
             }
             else if (rfo.ResultMessage == ResultMessageType.Failed)
             {
-                WriteErrorMessageToConsole("Failed to proccess provided data. Please check your data file!");
+                WriteErrorMessageToConsole(rfo.Message);
             }
         }
 

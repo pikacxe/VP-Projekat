@@ -45,12 +45,20 @@ namespace Service
             }
             try
             {
-                xmlHandler.ReadXmlFile(file.MS, file.FileName);
+                // Variable for result message
+                string message = string.Empty;
+
+                // Parse provided file
+                xmlHandler.ReadXmlFile(file.MS, file.FileName, out message);
+
+                // Set result message
                 fileOptions.ResultMessage = ResultMessageType.Success;
+                fileOptions.Message = message;
             }
             catch(Exception e)
             {
                 fileOptions.ResultMessage = ResultMessageType.Failed;
+                fileOptions.Message = "Internal service error";
                 Console.WriteLine($"[ERROR] {e.Message}");
             }
 

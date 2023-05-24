@@ -13,9 +13,10 @@ namespace Service
     public class XmlHandler : CustomEventSource<List<GroupedLoads>>
     {
         // method is responsible for reading and processing an XML file
-        public void ReadXmlFile(MemoryStream memoryStream, string filename)
+        public void ReadXmlFile(MemoryStream memoryStream, string filename, out string message)
         {
             XmlDocument xmlDocument = new XmlDocument();
+            message = string.Empty;
             using (MemoryStream ms = new MemoryStream(memoryStream.ToArray()))
             {
                 xmlDocument.Load(ms);
@@ -28,31 +29,24 @@ namespace Service
                     // If the xmlNodeList has at least one node, it means the XML document contains valid data.
                     if (xmlNodeList.Count > 0)
                     {
-                        if (ParseXmlNodeList(xmlNodeList))
+                        if (ParseXmlNodeList(xmlNodeList, out message))
                         {
                             WriteImportedFile(filename);
                         }
-
                     }
                     else
                     {
-                        string message = $"'{filename}' xml document is empty. Or does not cotains 'row' tags.";
+                        message = $"'{filename}' xml document is empty or does not contain 'row' tags.";
                         Audit audit = new Audit(DateTime.Now, MessageType.Error, message);
                         DataBase.Instance.AddAudit(audit);
-                        ms.Dispose();
-                        ms.Close();
-                        throw new FaultException<FileHandlingException>(new FileHandlingException(message));
                     }
                 }
                 // If the root element is null, it means the XML document is invalid
                 else
                 {
-                    string message = $"Invalid xml document '{filename}'";
+                    message = $"Invalid xml document '{filename}'";
                     Audit audit = new Audit(DateTime.Now, MessageType.Error, message);
                     DataBase.Instance.AddAudit(audit);
-                    ms.Dispose();
-                    ms.Close();
-                    throw new FaultException<FileHandlingException>(new FileHandlingException(message));
                 }
                 ms.Dispose();
                 ms.Close();
@@ -62,25 +56,31 @@ namespace Service
         private void WriteImportedFile(string filename)
         {
             DataBase.Instance.AddImportedFile(new ImportedFile(filename));
-            Console.WriteLine($"[INFO] Imported file '{filename}' proccessed and saved to database.");
+            Console.WriteLine($"[INFO] Imported file '{filename}' processed and saved to database.");
         }
 
         // method is responsible for parsing a list of XML nodes and processing them
-        private bool ParseXmlNodeList(XmlNodeList xmlNodeList)
+        private bool ParseXmlNodeList(XmlNodeList xmlNodeList, out string message)
         {
             List<GroupedLoads> groupedLoadsList = new List<GroupedLoads>();
             DateTime date = new DateTime();
             int listindex = -1;
             int count = 0;
+            int cntFailed = 0;
+            message = string.Empty;
 
             foreach (XmlNode x in xmlNodeList)
             {
-                Load load = ParseXmlNode(x);
+                count++;
+                Load load = ParseXmlNode(x, count);
+
                 // If the load object is not valid skip it
                 if (load.TimeStamp == new DateTime() || load.MeasuredValue == -1 || load.ForecastValue == -1)
                 {
+                    cntFailed++;
                     continue;
                 }
+
                 //If the date of the current load object is different from the date variable, it means that a new group should be created.
                 if (date.Date != load.TimeStamp.Date)
                 {
@@ -90,47 +90,70 @@ namespace Service
                 }
                 groupedLoadsList[listindex].loads.Add(load);
                 DataBase.Instance.AddLoad(load);
-                count++;
             }
-            Console.WriteLine($"[INFO] {count} loads proccessed and saved to database");
+            message = $"[INFO] processed '{count}' Loads" + (cntFailed > 0 ? $", out of which '{cntFailed}' Loads failed." : ".");
+            Console.WriteLine(message);
             RaiseCustomEvent(groupedLoadsList);
             return groupedLoadsList.Count > 0;
         }
 
         //this method parses an XML node and creates a Load object by extracting values from specific child nodes.
         //It performs parsing for the "TIME_STAMP", "FORECAST_VALUE", and "MEASURED_VALUE" nodes, assigning the parsed values to the corresponding properties of the Load object.
-        private Load ParseXmlNode(XmlNode x)
+        private Load ParseXmlNode(XmlNode x, int index)
         {
+            string errorMessage = string.Empty;
             Load load = new Load();
             DateTime date;
             //Check if date is valid
-            if (TryParseNodeValueDate(x.SelectSingleNode("TIME_STAMP"), out date))
+            string temp = string.Empty;
+            if ((temp = TryParseNodeValueDate(x.SelectSingleNode("TIME_STAMP"), out date)) == string.Empty)
             {
                 load.TimeStamp = date;
+            }
+            else
+            {
+                errorMessage += temp;
+                temp = string.Empty;
             }
 
             float forecast;
             //Check if forecast is valid
-            if (TryParseNodeValue(x.SelectSingleNode("FORECAST_VALUE"), out forecast))
+            if ((temp = TryParseNodeValue(x.SelectSingleNode("FORECAST_VALUE"), out forecast)) == string.Empty)
             {
                 load.ForecastValue = forecast;
 
             }
+            else
+            {
+                errorMessage += temp;
+                temp = string.Empty;
+            }
 
             float measured;
             //Check if measured is valid
-            if (TryParseNodeValue(x.SelectSingleNode("MEASURED_VALUE"), out measured))
+            if ((temp = TryParseNodeValue(x.SelectSingleNode("MEASURED_VALUE"), out measured)) == string.Empty)
             {
                 load.MeasuredValue = measured;
 
+            }
+            else
+            {
+                errorMessage += temp;
+                temp = string.Empty;
+            }
+            if(errorMessage != string.Empty)
+            {
+                Audit audit =new Audit(DateTime.Now, MessageType.Error, $"[Load {index}] - {errorMessage}");
+                DataBase.Instance.AddAudit(audit);
             }
 
             return load;
         }
 
         //method attempts to parse a date value from an XML node
-        private bool TryParseNodeValueDate(XmlNode xmlNode, out DateTime Storage)
+        private string TryParseNodeValueDate(XmlNode xmlNode, out DateTime Storage)
         {
+            string errorMessage = string.Empty;
             if (xmlNode != null)
             {
                 string stringValue = xmlNode.InnerText.Trim();
@@ -141,33 +164,32 @@ namespace Service
                     try
                     {
                         Storage = DateTime.ParseExact(stringValue, "yyyy-MM-dd HH:mm", null);
-                        return true;
+                        return errorMessage;
                     }
                     catch (FormatException)
                     {
-                        Audit audit = new Audit(DateTime.Now, MessageType.Warning, $"Invalid format in XmlNode '{xmlNode.Name}'.");
-                        DataBase.Instance.AddAudit(audit);
+                        errorMessage += $"Invalid format in XmlNode '{xmlNode.Name}'. ";
                     }
                 }
                 else
                 {
-                    Audit audit = new Audit(DateTime.Now, MessageType.Info, $"XmlNode '{xmlNode.Name}' is empty.");
-                    DataBase.Instance.AddAudit(audit);
+                    errorMessage += $"XmlNode '{xmlNode.Name}' is empty. ";
                 }
             }
-            // If the xmlNode is null, it creates an Audit object for a missing node error and adds it to the database
+            // If the xmlNode is null add apropriate message
             else
             {
-                Audit audit = new Audit(DateTime.Now, MessageType.Error, "XmlNode is missing.");
-                DataBase.Instance.AddAudit(audit);
+                errorMessage += $"XmlNode 'TIME_STAMP' is missing. "; 
             }
             // Finally, it assigns a new instance of the DateTime object to the Storage parameter, and the method returns false
             Storage = new DateTime();
-            return false;
+            return errorMessage;
         }
 
-        private bool TryParseNodeValue(XmlNode xmlNode, out float Storage)
+        private string TryParseNodeValue(XmlNode xmlNode, out float Storage)
         {
+            string errorMessage = string.Empty;
+            Storage = -1;
             if (xmlNode != null)
             {
                 string stringValue = xmlNode.InnerText.Trim();
@@ -177,32 +199,24 @@ namespace Service
                     //If there is a value, it tries to parse that string into a float using the float.TryParse method
                     bool ret = float.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out Storage);
                     //If the parsing fails, meaning the string value is not a valid floating-point number,
-                    // it creates an Audit object to record the error and adds it to the database
+                    // record the error
                     if (ret == false)
                     {
-                        Audit audit = new Audit(DateTime.Now, MessageType.Warning, $"Invalid value in XmlNode '{xmlNode.Name}'.");
-                        DataBase.Instance.AddAudit(audit);
-                        return false;
+                        errorMessage += $"Invalid value in XmlNode '{xmlNode.Name}'. ";
                     }
-                    return true;
-
                 }
-                //If the string value of the node is empty, it creates an Audit object for an empty node information and adds it to the database
+                //If the string value of the node is empty add apropriate message
                 else
                 {
-                    Audit audit = new Audit(DateTime.Now, MessageType.Info, $"XmlNode '{xmlNode.Name}' is empty.");
-                    DataBase.Instance.AddAudit(audit);
+                    errorMessage +=$"XmlNode '{xmlNode.Name}' is empty. ";
                 }
             }
-            //If the xmlNode is null, it creates an Audit object for a missing node error and adds it to the database
+            //If the xmlNode is null add apropriate message
             else
             {
-                Audit audit = new Audit(DateTime.Now, MessageType.Error, "XmlNode is missing.");
-                DataBase.Instance.AddAudit(audit);
+                errorMessage += $"XmlNode 'FORECAST_VALUE' or 'MEASURED_VALUE' is missing. ";
             }
-            //Finally, if the parsing was unsuccessful, it assigns the value -1 to the Storage parameter, and the method returns false
-            Storage = -1;
-            return false;
+            return errorMessage;
         }
     }
 }
