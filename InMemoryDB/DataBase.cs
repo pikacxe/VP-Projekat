@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InMemoryDB
 {
@@ -28,6 +29,11 @@ namespace InMemoryDB
         }       
         public void AddImportedFile(ImportedFile importedFile)
         {
+            // If file already exists in DB, then it is probably initiated by file change
+            if (importedfiles.Values.Any(x=>x.FileName == importedFile.FileName))
+            {
+                return;
+            }
             importedFile.ID = importedfiles.Count;
             importedfiles.TryAdd(importedFile.ID, importedFile);
         }   
