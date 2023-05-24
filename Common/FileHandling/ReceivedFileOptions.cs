@@ -28,7 +28,8 @@ namespace Common.FileHandling
         public int NumOfFiles { get; set; }
         [DataMember]
         public ResultMessageType ResultMessage { get; set; }
-
+        [DataMember]
+        public string Message { get; set; }
 
         public void Dispose()
         {
@@ -44,6 +45,7 @@ namespace Common.FileHandling
                     x.Close();
                 }
                 ReceivedFiles.Clear();
+                ReceivedFiles = null;
 
             }
             catch(Exception)

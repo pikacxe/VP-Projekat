@@ -48,7 +48,7 @@ namespace InMemoryDB
         // Returns string representation for csv header
         public static string CsvHeader()
         {
-            return "TIME_STAMP,FORECAST_VALUE,MEASURED_VALUE\n";
+            return "DATE,TIME,FORECAST_VALUE,MEASURED_VALUE\n";
         }
         // Returns csv formated string data
         public string ToCsv()

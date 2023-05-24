@@ -14,7 +14,7 @@ namespace UserInterface
         {
             // Load config options
             string filePath = ConfigurationManager.AppSettings.Get("xmlPath");
-            
+
 
             // Get file name from path
             string fileName = Path.GetFileName(filePath);
@@ -53,46 +53,64 @@ namespace UserInterface
                 Thread.Sleep(1000);
             };
 
-            // Create new ChannelFactory and load a preset configuration
-            ChannelFactory<IFileHandling> cf = new ChannelFactory<IFileHandling>("FileHandlingService");
-            IFileHandling fileHandler = cf.CreateChannel();
+            // Define needed parameters
+            SendFileOptions sfo = null;
+            ReceivedFileOptions rfo = null;
+            ChannelFactory<IFileHandling> cf = null;
+            IFileHandling fileHandler;
 
-            // Prepare file content for sending
-            using (SendFileOptions sfo = new SendFileOptions(new MemoryStream(), e.Name))
+            try
             {
+                // Create new ChannelFactory and load a preset configuration
+                cf = new ChannelFactory<IFileHandling>("FileHandlingService");
+                fileHandler = cf.CreateChannel();
+
+                // Prepare file content for sending
+                sfo = new SendFileOptions(new MemoryStream(), e.Name);
+
                 // Write file content to memory stream
                 GetMemoryStream(sfo.MS, e.FullPath);
                 Console.WriteLine("[Info] Sending data to service for proccessing!");
-                try
-                {
-                    // Send file content to service
-                    using (ReceivedFileOptions rfo = fileHandler.SendData(sfo))
-                    {
-                        // Dispose of sent file as it is no longer needed
-                        sfo.Dispose();
-                        Console.WriteLine("[Info] Received results!");
-                        HandleResult(rfo);
 
-                        // Properly dispose of received files
-                        rfo.Dispose();
-                    }
-                }
-                catch (FaultException<FileHandlingException> ex)
+                // Send file content to service
+                rfo = fileHandler.SendData(sfo);
+
+                // Dispose of send file options as it is no longer needed
+                sfo.Dispose();
+
+                Console.WriteLine("[Info] Received results!");
+                HandleResult(rfo);
+
+                // Properly dispose of received files
+                rfo.Dispose();
+
+            }
+            catch (FaultException<FileHandlingException> ex)
+            {
+                WriteErrorMessageToConsole(ex.Detail.Message);
+            }
+            catch (Exception ex)
+            {
+                WriteErrorMessageToConsole(ex.Message);
+            }
+            finally
+            {
+                if(rfo != null)
                 {
-                    WriteErrorMessageToConsole(ex.Detail.Message);
+                    rfo.Dispose();
                 }
-                catch (Exception ex)
-                {
-                    WriteErrorMessageToConsole(ex.Message);
-                }
-                finally
+                if(sfo != null)
                 {
                     sfo.Dispose();
                 }
+                if(cf != null)
+                {
+                    cf.Close();
+                }
             }
-            cf.Close();
             Console.WriteLine("Waiting for changes. Press Esc to exit...");
         }
+
 
         private static void WriteErrorMessageToConsole(string message)
         {

@@ -21,7 +21,7 @@ namespace Service
             using (ServiceHost host = new ServiceHost(typeof(FileHandlingService)))
             {
                 host.Open();
-                Console.WriteLine("Service started. Press Esc twice to exit...");
+                Console.WriteLine("Service started. Press Esc to exit...");
                 while (Console.ReadKey(intercept:true).Key != ConsoleKey.Escape);
                 host.Close();
             }

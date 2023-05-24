@@ -13,7 +13,7 @@ namespace Service
         public GroupedLoads(DateTime date)
         {
             this.date = date;
-            loads=new List<Load>();
+            loads=new List<Load>(25);
         }
 
     }

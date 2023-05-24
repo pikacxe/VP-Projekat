@@ -19,15 +19,15 @@ namespace Service
                 while (true)
                 {
                     keyInfo = Console.ReadKey(intercept:true);
-                    if (keyInfo.Key == ConsoleKey.F4)
+                    if (keyInfo.Key == ConsoleKey.F5)
                     {
                         RaiseCustomEvent("audits");
                     }
-                    if (keyInfo.Key == ConsoleKey.F5)
+                    if (keyInfo.Key == ConsoleKey.F6)
                     {
                         RaiseCustomEvent("loads");
                     }
-                    if (keyInfo.Key == ConsoleKey.F6)
+                    if (keyInfo.Key == ConsoleKey.F7)
                     {
                         RaiseCustomEvent("ifiles");
                     }

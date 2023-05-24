@@ -35,7 +35,8 @@ namespace Service
         [OperationBehavior(AutoDisposeParameters = true)]
 
 
-        
+        /// Main entry method. Accepts file from client's side.
+        /// Proccess it and generate result file options
         public ReceivedFileOptions SendData(SendFileOptions file)
         {
             if (file == null || file.MS == null)
