@@ -40,9 +40,24 @@ namespace InMemoryDB
             _Message = message;
         }
 
+        private string GetType()
+        {
+            switch (MessageType)
+            {
+                case MessageType.Info:
+                    return "Info";
+                case MessageType.Warning:
+                    return "Warning";
+                case MessageType.Error:
+                    return "Error";
+                default:
+                    return string.Empty;
+            }
+        }
+
         public override string ToString()
         {
-            return $"{ID}\t{Timestamp}\t\t{nameof(MessageType)}\t{Message}";
+            return $"{ID}\t{Timestamp}\t{GetType()}\t{Message}";
         }
 
         public static string FormatHeader()

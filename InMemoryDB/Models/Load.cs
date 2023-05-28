@@ -58,12 +58,12 @@ namespace InMemoryDB
 
         public override string ToString()
         {
-            return $"{ID}\t{TimeStamp}\t\t{ForecastValue.ToString("0.00", CultureInfo.InvariantCulture)}\t{MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture)}";
+            return $"{ID, 3}\t{TimeStamp.ToString("yyyy.MM.dd HH:mm"), 16}\t{ForecastValue.ToString("0.00", CultureInfo.InvariantCulture), 0}\t{MeasuredValue.ToString("0.00", CultureInfo.InvariantCulture), 15}";
         }
 
         public static string FormatHeader()
         {
-            return "\n==========LOADS==========\nID\tTIMESTAMP\t\tFORECASTVALUE\tMEASUREDVALUE";
+            return $"\n==========LOADS==========\n{"ID", 3}\t{"TIMESTAMP", 4}\t\t{"FORECASTVALUE", 7}\t{"MEASUREDVALUE", 7}";
         }
 
     }
