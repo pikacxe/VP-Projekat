@@ -70,7 +70,7 @@ namespace UserInterface
 
                 // Write file content to memory stream
                 GetMemoryStream(sfo.MS, e.FullPath);
-                Console.WriteLine("[Info] Sending data to service for proccessing!");
+                Console.WriteLine("[INFO] Sending data to service for proccessing!");
 
                 // Send file content to service
                 rfo = fileHandler.SendData(sfo);
@@ -78,7 +78,7 @@ namespace UserInterface
                 // Dispose of send file options as it is no longer needed
                 sfo.Dispose();
 
-                Console.WriteLine("[Info] Received results!");
+                Console.WriteLine("[INFO] Received results!");
                 HandleResult(rfo);
 
                 // Properly dispose of received files
@@ -115,7 +115,7 @@ namespace UserInterface
         private static void WriteErrorMessageToConsole(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Error] {message}");
+            Console.WriteLine($"[ERROR] {message}");
             Console.ResetColor();
         }
 
@@ -139,8 +139,9 @@ namespace UserInterface
         {
             if (rfo.ResultMessage == ResultMessageType.Success)
             {
+                Console.WriteLine(rfo.Message);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"[Success] Received {rfo.NumOfFiles} files. Initialized file saving sequence...");
+                Console.WriteLine($"[SUCCESS] Received {rfo.NumOfFiles} files. Initialized file saving sequence...");
 
                 // Where to save received files
                 string receivePath = ConfigurationManager.AppSettings.Get("savePath");
@@ -162,7 +163,7 @@ namespace UserInterface
                     }
                 }
 
-                Console.WriteLine($"[Success] File saving sequence completed! Saved {rfo.NumOfFiles} to '{receivePath}'");
+                Console.WriteLine($"[SUCCESS] File saving sequence completed! Saved {rfo.NumOfFiles} to '{receivePath}'");
                 Console.ResetColor();
             }
             else if (rfo.ResultMessage == ResultMessageType.Failed)

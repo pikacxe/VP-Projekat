@@ -40,7 +40,7 @@ namespace InMemoryDB
             _Message = message;
         }
 
-        private string GetType()
+        private string GetMessageType()
         {
             switch (MessageType)
             {
@@ -57,7 +57,7 @@ namespace InMemoryDB
 
         public override string ToString()
         {
-            return $"{ID}\t{Timestamp}\t{GetType()}\t{Message}";
+            return $"{ID}\t{Timestamp}\t{GetMessageType()}\t{Message}";
         }
 
         public static string FormatHeader()

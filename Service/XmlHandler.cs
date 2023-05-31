@@ -91,7 +91,7 @@ namespace Service
                 groupedLoadsList[listindex].loads.Add(load);
                 DataBase.Instance.AddLoad(load);
             }
-            message = $"[INFO] processed '{count}' Loads" + (cntFailed > 0 ? $", out of which '{cntFailed}' Loads failed." : ".");
+            message = $"[INFO] Processed '{count}' Load(s)" + (cntFailed > 0 ? $", out of which '{cntFailed}' Load(s) failed." : ".");
             Console.WriteLine(message);
             RaiseCustomEvent(groupedLoadsList);
             return groupedLoadsList.Count > 0;
